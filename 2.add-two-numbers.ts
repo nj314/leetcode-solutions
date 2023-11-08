@@ -76,6 +76,16 @@ describe("addTwoNumbers", () => {
       l2: [5, 6, 4],
       output: [7, 0, 8],
     },
+    {
+      l1: [0],
+      l2: [0],
+      output: [0],
+    },
+    {
+      l1: [9, 9, 9, 9, 9, 9, 9],
+      l2: [9, 9, 9, 9],
+      output: [8, 9, 9, 9, 0, 0, 0, 1],
+    },
   ])("should turn $l1 and $l2 into $output", (testCase) => {
     expect(
       addTwoNumbers(
