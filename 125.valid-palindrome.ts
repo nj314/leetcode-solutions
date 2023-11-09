@@ -6,10 +6,7 @@
 
 // @lc code=start
 function isPalindrome(s: string): boolean {
-  const sanitized = s
-    .toLowerCase()
-    .replace(/[^a-z1-9]/g, "")
-    .toLowerCase();
+  const sanitized = s.toLowerCase().replace(/[^a-z0-9]/g, "");
   const reversed = sanitized.split("").reverse().join("");
   return reversed === sanitized;
 }
@@ -28,6 +25,10 @@ describe("isPalindrome", () => {
     {
       input: " ",
       output: true,
+    },
+    {
+      input: "0P",
+      output: false,
     },
   ])("should turn $input into $output", (testCase) => {
     expect(isPalindrome(testCase.input)).toEqual(testCase.output);
