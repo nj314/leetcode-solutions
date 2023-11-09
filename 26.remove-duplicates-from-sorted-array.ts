@@ -37,8 +37,8 @@ describe("removeDuplicates", () => {
     console.log("nums are now", testCase.nums);
 
     // Verify in-place sort
-    for (let i = 0; i < k; i++) {
-      expect(testCase.nums[i]).toEqual(testCase.expectedNums[i]);
-    }
+    expect(testCase.nums.slice(0, k)).toEqual(
+      testCase.expectedNums.slice(0, k)
+    );
   });
 });
