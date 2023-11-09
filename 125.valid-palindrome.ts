@@ -7,8 +7,10 @@
 // @lc code=start
 function isPalindrome(s: string): boolean {
   const sanitized = s.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const reversed = sanitized.split("").reverse().join("");
-  return reversed === sanitized;
+  for (let i = 0; i < sanitized.length; i++) {
+    if (sanitized[i] !== sanitized[sanitized.length - i - 1]) return false;
+  }
+  return true;
 }
 // @lc code=end
 
