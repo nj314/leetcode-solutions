@@ -6,47 +6,41 @@
 
 // @lc code=start
 function exist(board: string[][], word: string): boolean {
-  function existsInPath(
-    pos: number[],
-    partialWord: string,
-    consumed: number[][]
-  ): boolean {
+  function existsInPath(pos: number[], index: number): boolean {
     // console.log(`Searching for ${partialWord} from ${pos}`);
-    if (partialWord.length <= 1) {
+    if (index > word.length - 1) {
       // console.log("Success");
       return true;
     }
     // console.log("Consumed: ", consumed);
-    const targetLetter = partialWord[1];
+    const targetLetter = word[index];
     const adjacentCells = [
       [pos[0] - 1, pos[1]],
       [pos[0] + 1, pos[1]],
       [pos[0], pos[1] - 1],
       [pos[0], pos[1] + 1],
-    ].filter(
-      // Make sure each cell hasn't yet been consumed
-      (coord) => !consumed.some((p) => p[0] === coord[0] && p[1] === coord[1])
-    );
+    ];
     for (let [r, c] of adjacentCells) {
       // Check this cell
       if (board[r]?.[c] === targetLetter) {
-        if (
-          existsInPath([r, c], partialWord.slice(1), consumed.concat([[r, c]]))
-        ) {
+        board[r][c] = "#"; // mark this cell
+        if (existsInPath([r, c], index + 1)) {
           return true;
         }
+        board[r][c] = targetLetter; // clean up mark
       }
     }
     return false;
   }
 
+  const targetLetter = word[0];
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[row].length; col++) {
-      if (
-        board[row][col] === word[0] && // Check if this cell is a valid starting point
-        existsInPath([row, col], word, [[row, col]])
-      )
-        return true;
+      if (board[row][col] === targetLetter) {
+        board[row][col] = "#"; // mark
+        if (existsInPath([row, col], 1)) return true;
+        board[row][col] = targetLetter; // unmark
+      }
     }
   }
   return false;
