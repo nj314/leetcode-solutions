@@ -4,37 +4,17 @@
  * [2] Add Two Numbers
  */
 
-class ListNode {
-  val: number;
-  next: ListNode | null;
-  constructor(val?: number, next?: ListNode | null) {
-    this.val = val === undefined ? 0 : val;
-    this.next = next === undefined ? null : next;
-  }
-
-  static fromArray(arr: number[]): ListNode {
-    const firstNode = new ListNode(arr[0], null);
-    let node = firstNode;
-    arr.forEach((value, i) => {
-      if (i === 0) return;
-      node.next = new ListNode(value, null);
-      node = node.next;
-    });
-
-    return firstNode;
-  }
-}
-
 // @lc code=start
 /**
  * Definition for singly-linked list.
+ *
  * class ListNode {
- *     val: number
- *     next: ListNode | null
- *     constructor(val?: number, next?: ListNode | null) {
- *         this.val = (val===undefined ? 0 : val)
- *         this.next = (next===undefined ? null : next)
- *     }
+ *   val: number;
+ *   next: ListNode | null;
+ *   constructor(val?: number, next?: ListNode | null) {
+ *     this.val = val === undefined ? 0 : val;
+ *     this.next = next === undefined ? null : next;
+ *   }
  * }
  */
 
@@ -42,30 +22,26 @@ function addTwoNumbers(
   l1: ListNode | null,
   l2: ListNode | null
 ): ListNode | null {
-  function toNumber(l: ListNode | null) {
-    if (!l) return 0;
-    let str = "";
-    for (let node: ListNode | null = l; node; node = node.next) {
-      str = `${node.val}${str}`;
-    }
-    return Number(str);
-  }
+  let a = l1,
+    b = l2;
+  let carried = 0;
+  let result = new ListNode(0, null);
+  let node: ListNode = result;
+  while (a || b || carried) {
+    const digitSum = (a?.val ?? 0) + (b?.val ?? 0) + carried;
+    node.val = digitSum % 10;
+    // console.log("adding a ", node.val);
+    carried = (digitSum - node.val) / 10;
 
-  function toLinkedList(n: number) {
-    const arr = n.toString().split("").reverse().map(Number);
-    const firstNode = new ListNode(arr[0], null);
-    let node = firstNode;
-    arr.forEach((value, i) => {
-      if (i === 0) return;
-      node.next = new ListNode(value, null);
+    a = a?.next || null;
+    b = b?.next || null;
+    if (a || b || carried) {
+      node.next = new ListNode(0, null);
       node = node.next;
-    });
-
-    return firstNode;
+    }
   }
 
-  const sum = toNumber(l1) + toNumber(l2);
-  return toLinkedList(sum);
+  return result;
 }
 // @lc code=end
 
@@ -86,29 +62,39 @@ describe("addTwoNumbers", () => {
       l2: [9, 9, 9, 9],
       output: [8, 9, 9, 9, 0, 0, 0, 1],
     },
+    {
+      l1: [2, 4, 9],
+      l2: [5, 6, 4, 9],
+      output: [7, 0, 4, 0, 1],
+    },
+    {
+      l1: [
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+      ],
+      l2: [5, 6, 4],
+      output: [
+        6, 6, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+      ],
+    },
   ])("should turn $l1 and $l2 into $output", (testCase) => {
+    function arrayToListNodes(arr: number[]) {
+      const firstNode = new ListNode(arr[0], null);
+      arr.reduce((prev, curr, i) => {
+        if (i === 0) return prev;
+        const newNode = new ListNode(curr, null);
+        prev.next = newNode;
+        return prev.next;
+      }, firstNode);
+      return firstNode;
+    }
+
     expect(
       addTwoNumbers(
-        ListNode.fromArray(testCase.l1),
-        ListNode.fromArray(testCase.l2)
+        arrayToListNodes(testCase.l1),
+        arrayToListNodes(testCase.l2)
       )
-    ).toEqual(ListNode.fromArray(testCase.output));
-  });
-});
-
-describe("ListNode", () => {
-  it("should create from array", () => {
-    expect(ListNode.fromArray([2, 4, 3])).toMatchInlineSnapshot(`
-      ListNode {
-        "next": ListNode {
-          "next": ListNode {
-            "next": null,
-            "val": 3,
-          },
-          "val": 4,
-        },
-        "val": 2,
-      }
-    `);
+    ).toEqual(arrayToListNodes(testCase.output));
   });
 });
