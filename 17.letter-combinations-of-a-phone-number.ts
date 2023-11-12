@@ -17,18 +17,23 @@ function letterCombinations(digits: string): string[] {
     "9": ["w", "x", "y", "z"],
   };
 
-  function addLettersForDigit(digit: string, current: string) {
-    if (!digit) return [];
+  function addRecursive(remainingDigits: string) {
+    if (!remainingDigits.length) return [];
+    let results: string[] = [];
+    const digit = remainingDigits[0];
     const letters = mapping[digit];
-    const results = letters.map((l) => l + current);
+    let subsequentCombinations: string[] = addRecursive(
+      remainingDigits.slice(1)
+    );
+    if (!subsequentCombinations.length) subsequentCombinations = [""];
+    letters.forEach((letter) => {
+      results = results.concat(subsequentCombinations.map((c) => letter + c));
+    });
     return results;
   }
 
-  let results: string[] = addLettersForDigit(digits[digits.length - 1], "");
-  for (let i = digits.length - 2; i >= 0; i--) {
-    results = results.flatMap((r) => addLettersForDigit(digits[i], r));
-    console.log("results: ", results);
-  }
+  const results = addRecursive(digits);
+
   return results;
 }
 // @lc code=end
