@@ -41,7 +41,7 @@ describe("removeDuplicates II", () => {
     },
   ])("should return $expectedNums.length for $nums", (testCase) => {
     const k = removeDuplicates(testCase.nums);
-    console.log("nums are now", testCase.nums);
+    //  console.log("nums are now", testCase.nums);
     expect(k).toEqual(testCase.expectedNums.length);
 
     // Verify in-place sort

@@ -19,11 +19,11 @@ function isValidSudoku(board: string[][]): boolean {
       if (cellStr === ".") continue;
       const cell = Number(cellStr);
       if (hasValue[cell]) {
-        console.log("duplicate value detected");
+        //  console.log("duplicate value detected");
         return false;
       }
       if (!isValidCell(cellStr)) {
-        console.log("invalid cell", cellStr);
+        //  console.log("invalid cell", cellStr);
         return false;
       }
       hasValue[cell] = true;
@@ -32,7 +32,7 @@ function isValidSudoku(board: string[][]): boolean {
   }
 
   // Validate rows
-  console.log("validating rows");
+  //  console.log("validating rows");
   for (let row of board) {
     if (!isValidVector(row)) {
       return false;
@@ -40,13 +40,13 @@ function isValidSudoku(board: string[][]): boolean {
   }
 
   // Validate columns
-  console.log("validating columns");
+  //  console.log("validating columns");
   for (let i = 0; i < 9; i++) {
     const col = board.map((row) => row[i]);
     if (!isValidVector(col)) return false;
   }
 
-  console.log("validating sub boxes");
+  //  console.log("validating sub boxes");
   // Validate sub boxes
   for (let i = 0; i < 9; i += 3) {
     // iterate through rows
