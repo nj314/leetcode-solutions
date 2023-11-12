@@ -23,7 +23,7 @@ function twoSum(numbers: number[], target: number): number[] {
 }
 // @lc code=end
 
-describe.only("twoSum II", () => {
+describe("twoSum II", () => {
   it.each([
     {
       nums: [2, 7, 11, 15],
