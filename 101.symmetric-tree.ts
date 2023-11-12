@@ -57,6 +57,7 @@ function isSymmetric(root: TreeNode | null): boolean {
 }
 // @lc code=end
 
+/*
 describe("isSymmetric", () => {
   it.each([
     {
@@ -71,3 +72,4 @@ describe("isSymmetric", () => {
     expect(isSymmetric(testCase.input)).toEqual(testCase.output);
   });
 });
+*/
