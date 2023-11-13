@@ -6,38 +6,40 @@
 
 // @lc code=start
 function canFinish(numCourses: number, prerequisites: number[][]): boolean {
-  // make a hashmap of course prereqs
+  // make an "adjacency list" of course prereqs
+  const indegree = Array(numCourses).fill(0);
   const prereqMap = prerequisites.reduce<Record<number, number[]>>(
     (prev, curr) => {
-      prev[curr[0]] = (prev[curr[0]] || []).concat(curr[1]);
+      // [key] is a prerequisite for [value]
+      prev[curr[1]] = (prev[curr[1]] || []).concat(curr[0]);
+      indegree[curr[0]]++; // indegree = how many prerequisites does this course have
       return prev;
     },
     {}
   );
 
-  for (const courseIdStr in prereqMap) {
-    const rootCourseId = Number(courseIdStr);
-    // console.log("rootCourseId", rootCourseId);
-    const queue: number[] = [rootCourseId];
-    const coursesTaken = new Set<number>([rootCourseId]);
-
-    // Verify that courseId is not in prereqs at any depth
-    while (queue.length) {
-      const currentCourse = queue.shift();
-      if (currentCourse === undefined) throw new Error("Should never happen");
-      coursesTaken.add(currentCourse);
-      const prereqs = prereqMap[currentCourse];
-      // console.log("currentCourse: ", currentCourse, "prereqs: ", prereqs);
-      if (!prereqs?.length) continue;
-      if (prereqs.includes(rootCourseId)) {
-        // console.log("returning false, root course id", rootCourseId);
-        return false;
-      }
-
-      queue.push(...prereqs.filter((p) => !coursesTaken.has(p)));
-    }
+  let queue: number[] = [];
+  for (let course = 0; course < numCourses; course++) {
+    if (indegree[course] === 0) queue.push(course);
   }
-  return true;
+
+  // console.log(`initial found ${queue.length} zero indegree nodes`);
+
+  // Remove relationships from courses with zero indegree
+  let visited = 0;
+  while (queue.length) {
+    const course = queue.shift() as number;
+    visited++;
+    // console.log("visited is now ", visited);
+    const followUps = prereqMap[course];
+    followUps?.forEach((course) => {
+      indegree[course]--;
+      // console.log(`course ${course} has ${indegree[course]} indegrees now`);
+      if (indegree[course] === 0) queue.push(course);
+    });
+  }
+
+  return visited === numCourses;
 }
 // @lc code=end
 
