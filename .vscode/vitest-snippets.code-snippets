@@ -17,7 +17,7 @@
   // }
   "Basic describe() block for leetcode": {
     "scope": "javascript,typescript",
-    "prefix": "describe",
+    "prefix": "lcdescribe",
     "body": [
       "describe('$1', () => {",
       "  it.each([",
@@ -30,5 +30,10 @@
       "  });",
       "})"
     ]
+  },
+  "Test case for leetcode": {
+    "scope": "javascript,typescript",
+    "prefix": "lccase",
+    "body": ["{", "  input: $1,", "  output: $2", "},", "$0"]
   }
 }
