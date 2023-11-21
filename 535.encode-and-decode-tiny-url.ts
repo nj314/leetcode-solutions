@@ -5,36 +5,22 @@
  */
 
 // @lc code=start
+
+const map = new Map();
+let i = 0;
 /**
  * Encodes a URL to a shortened URL.
  */
 function encode(longUrl: string): string {
-  const hashMap = longUrl
-    .split("")
-    .reduce<Record<string, number[]>>((prev, curr, i) => {
-      const code = curr.charCodeAt(0);
-      prev[code] = (prev[code] ?? []).concat(i);
-      return prev;
-    }, {});
-
-  const result = Object.entries(hashMap)
-    .map(([code, indices]) => `${code}:${indices.join(",")}`)
-    .join("|");
-  console.log("encoded to", result);
-  return result;
+  map.set(i, longUrl);
+  return (i++).toString();
 }
 
 /**
  * Decodes a shortened URL to its original URL.
  */
-function decode(shortUrl: string): string {
-  const answer: string[] = [];
-  shortUrl.split("|").forEach((charIndices) => {
-    const [code, frequencies] = charIndices.split(":");
-    const char = String.fromCharCode(Number(code));
-    frequencies.split(",").forEach((f) => (answer[Number(f)] = char));
-  });
-  return answer.join("");
+function decode(i: string): string {
+  return map.get(Number(i));
 }
 
 /**
