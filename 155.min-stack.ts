@@ -7,14 +7,21 @@
 // @lc code=start
 class MinStack {
   store: number[] = [];
+  min: number[] = [];
   constructor() {}
 
   push(val: number): void {
     this.store.push(val);
+    if (this.min.length === 0 || val <= this.min[this.min.length - 1]) {
+      this.min.push(val);
+    }
   }
 
   pop(): void {
-    this.store.pop();
+    const val = this.store.pop();
+    if (this.min[this.min.length - 1] === val) {
+      this.min.pop();
+    }
   }
 
   top(): number {
@@ -22,7 +29,9 @@ class MinStack {
   }
 
   getMin(): number {
-    return Math.min(...this.store);
+    // console.log(`length is ${this.store.length}`);
+    // console.log(`last element is`, this.store[this.store.length - 1]);
+    return this.min[this.min.length - 1];
   }
 }
 
