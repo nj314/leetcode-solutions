@@ -6,19 +6,18 @@
 
 // @lc code=start
 function productExceptSelf(nums: number[]): number[] {
-  const leftProduct: number[] = [],
-    rightProduct: number[] = [];
+  const answer: number[] = [];
   let l = 1,
     r = 1;
   for (let i = 0; i < nums.length; i++) {
-    leftProduct[i] = l;
+    answer[i] = l;
     l *= nums[i];
   }
   for (let i = nums.length - 1; i >= 0; i--) {
-    rightProduct[i] = r;
+    answer[i] = answer[i] * r;
     r *= nums[i];
   }
   // console.log("leftProduct", leftProduct, "rightProduct", rightProduct);
-  return nums.map((_n, i) => leftProduct[i] * rightProduct[i]);
+  return answer;
 }
 // @lc code=end
