@@ -7,50 +7,24 @@
 // @lc code=start
 function carFleet(target: number, position: number[], speed: number[]): number {
   let answer = 0;
-  let fleets = position.reduce<
-    Record<number, { minSpeed: number; cars: number[] }>
-  >((prev, curr, i) => {
-    if (!prev[curr]) {
-      prev[curr] = { minSpeed: speed[i], cars: [i] };
-    } else {
-      prev[curr].cars.push(i);
+  const cars = position
+    .map((pos, i) => [pos, i, speed[i]])
+    .sort((a, b) => b[0] - a[0]);
+  //console.log("cars", cars);
+  const timeToTarget = cars.map(
+    ([pos, initialIndex, speed], i) => (target - pos) / speed
+  );
+  //console.log("initial timeToTarget", timeToTarget);
+  for (let i = 0; i < cars.length - 1; i++) {
+    if (timeToTarget[i] > timeToTarget[i + 1]) {
+      // These two cars will form a fleet before reaching the target
+      // the "next" car back will slow down and reach the target at the same time as the current car
+      timeToTarget[i + 1] = timeToTarget[i];
     }
-    return prev;
-  }, {});
-
-  while (Object.keys(fleets).length) {
-    console.log("\ntick");
-    let arrivedThisTick = false;
-    fleets = Object.entries(fleets).reduce<typeof fleets>((prev, curr) => {
-      const [positionStr, fleetState] = curr;
-      console.log(
-        `At position ${positionStr}:\n  speed ${fleetState.minSpeed}`
-      );
-      console.log(`  cars ${fleetState.cars}`);
-      const position = Number(positionStr) + fleetState.minSpeed;
-
-      // Did this fleet just arrive? If so, note the arrival and stop tracking.
-      if (position >= target) {
-        console.log(`  fleet arrived!`);
-        arrivedThisTick = true;
-        return prev;
-      }
-
-      const existingFleet = prev[position];
-      if (existingFleet) {
-        existingFleet.cars = prev[position].cars.concat(fleetState.cars);
-        existingFleet.minSpeed = Math.min(
-          existingFleet.minSpeed,
-          fleetState.minSpeed
-        );
-      } else {
-        prev[position] = fleetState;
-      }
-
-      return prev;
-    }, {});
-    answer += arrivedThisTick ? 1 : 0;
-    console.log("total fleets arrived: ", answer);
+    //console.log("timeToTarget", timeToTarget);
+  }
+  for (let i = 0; i < timeToTarget.length; i++) {
+    if (timeToTarget[i] !== timeToTarget[i - 1]) answer++;
   }
 
   return answer;
@@ -97,7 +71,13 @@ describe("carFleet", () => {
         speed: [4, 4, 4, 4, 4, 4],
         output: 6,
       },
-    ].slice(5, 6)
+      {
+        target: 16,
+        position: [11, 14, 13, 6],
+        speed: [2, 2, 6, 7],
+        output: 2,
+      },
+    ].slice(0)
   )(
     "should turn target $target, position $position, and speed $speed into $output",
     ({ target, position, speed, output }) => {
