@@ -7,11 +7,19 @@
 // @lc code=start
 function dailyTemperatures(temperatures: number[]): number[] {
   const answer: number[] = Array(temperatures.length);
+  const warmups: [number, number][] = []; // [temperature, index]
+  for (let i = 1; i < temperatures.length; i++) {
+    if (temperatures[i] <= temperatures[i - 1]) continue;
+    warmups.push([temperatures[i], i]);
+  }
   for (let i = 0; i < temperatures.length; i++) {
+    const target = temperatures[i];
     let daysTillWarmer = 0;
-    for (let j = i + 1; j < temperatures.length; j++) {
-      if (temperatures[j] > temperatures[i]) {
-        daysTillWarmer = j - i;
+    for (let j = 0; j < warmups.length; j++) {
+      const [temperature, index] = warmups[j];
+      if (index <= i) continue;
+      if (temperature > target) {
+        daysTillWarmer = index - i;
         break;
       }
     }
