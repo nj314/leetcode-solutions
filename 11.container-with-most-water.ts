@@ -7,28 +7,16 @@
 // @lc code=start
 function maxArea(height: number[]): number {
   if (height.length <= 1) return 0;
-  let max = 0;
-  const localMaxima: number[] = [0];
-  for (let i = 1; i < height.length; i++) {
-    //console.log(`\ni = ${i}, height = ${height[i]}`);
-    const stack = [...localMaxima];
-    while (stack.length) {
-      const j = stack.pop() as number;
-      //console.log(`j = ${j}, height = ${height[j]}`);
-      const h = Math.min(height[i], height[j]);
-      const w = i - j;
-      const area = h * w;
-      //console.log(`${w} * ${h} = ${area}`);
-      if (area > max) {
-        max = area;
-        //console.log("New max area: ", max);
-      }
-    }
-
-    if (height[i] > height[i - 1]) {
-      //console.log(`Local maximum at index ${i}, height ${height[i]}`);
-      localMaxima.push(i);
-    }
+  let max = 0,
+    i = 0,
+    j = height.length - 1;
+  while (i < j) {
+    const leftWall = height[i];
+    const rightWall = height[j];
+    const area = Math.min(leftWall, rightWall) * (j - i);
+    if (max < area) max = area;
+    if (leftWall < rightWall) i++;
+    else j--;
   }
 
   return max;
