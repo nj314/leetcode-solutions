@@ -6,30 +6,38 @@
 
 // @lc code=start
 function maxProfit(prices: number[]): number {
-  let max = 0;
+  let maxProfit = 0,
+    minPrice = prices[0];
 
-  for (let start = 0; start < prices.length - 1; start++) {
-    for (let end = start + 1; end < prices.length; end++) {
-      const priceDiff = prices[end] - prices[start];
-      if (priceDiff > 0) max = Math.max(max, priceDiff);
-    }
+  for (let i = 0; i < prices.length; i++) {
+    const price = prices[i];
+    if (price >= minPrice && i !== 0) continue;
+    minPrice = price;
+    const maxSalePrice = Math.max(...prices.slice(i + 1));
+    maxProfit = Math.max(maxProfit, maxSalePrice - minPrice);
   }
 
-  return max;
+  return maxProfit;
 }
 // @lc code=end
 
 describe("maxProfit", () => {
-  it.each([
-    {
-      input: [7, 1, 5, 3, 6, 4],
-      output: 5,
-    },
-    {
-      input: [7, 6, 4, 3, 1],
-      output: 0,
-    },
-  ])("should turn $input into $output", (testCase) => {
+  it.each(
+    [
+      {
+        input: [7, 1, 5, 3, 6, 4],
+        output: 5,
+      },
+      {
+        input: [7, 6, 4, 3, 1],
+        output: 0,
+      },
+      {
+        input: [1, 2],
+        output: 1,
+      },
+    ].slice(0)
+  )("should turn $input into $output", (testCase) => {
     expect(maxProfit(testCase.input)).toEqual(testCase.output);
   });
 });
