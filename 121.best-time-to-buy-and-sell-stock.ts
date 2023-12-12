@@ -7,14 +7,14 @@
 // @lc code=start
 function maxProfit(prices: number[]): number {
   let maxProfit = 0,
-    minPrice = prices[0];
+    minBuyPrice = prices[0];
 
   for (let i = 0; i < prices.length; i++) {
-    const price = prices[i];
-    if (price >= minPrice && i !== 0) continue;
-    minPrice = price;
-    const maxSalePrice = Math.max(...prices.slice(i + 1));
-    maxProfit = Math.max(maxProfit, maxSalePrice - minPrice);
+    if (prices[i] < minBuyPrice) {
+      minBuyPrice = prices[i]; // use this as the new buy price instead
+    } else if (prices[i] - minBuyPrice > maxProfit) {
+      maxProfit = prices[i] - minBuyPrice;
+    }
   }
 
   return maxProfit;
